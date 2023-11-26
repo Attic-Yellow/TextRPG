@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
+using TextRPG.Entity.Characters;
+using TextRPG.Items.Equipment.Weapons;
 
 namespace TextRPG.Entity
 {
@@ -27,224 +30,129 @@ namespace TextRPG.Entity
         BlackMage // 원거리 마법 딜러
     }
 
-    class Character : Entity
+    public class Character : Entity
     {
         public string Name { get; set; }
+        public int Experience { get; set; }
         public CharacterClass JobClass { get; set; }
-        public int Experience { get; private set; }
+        public Weapon EquippedWeapon { get; private set; }
+        public int Luck { get; internal set; }
+        public int Critical { get; internal set; }
 
-        public Character(string name, CharacterClass characterClass, int level, int health, int mana, int physicalAttack, int magicalAttack, int speed, int physicalDefense, int magicalDefense, int healingPower, int selfHealingPower)
-            : base(level, health, mana, physicalAttack, magicalAttack, speed, physicalDefense, magicalDefense, healingPower, selfHealingPower)
+        [JsonConstructor]
+        public Character(string name, CharacterClass jobClass, int level, int health, int mana, int physicalAttack, int magicalAttack, int physicalDefense, int magicalDefense, int speed, int healingPower, int selfHealingPower, int experience)
+           : base(level, health, mana, physicalAttack, magicalAttack, physicalDefense, magicalDefense, speed, healingPower, selfHealingPower)
         {
             Name = name;
-            JobClass = characterClass;
-            InitClass(); // 직업별 추가 능력치 설정
+            Experience = experience;
+            JobClass = jobClass;
+            EquipDefaultWeapon(); 
         }
 
-        private void InitClass()
+        private void EquipDefaultWeapon()
         {
             switch (JobClass)
             {
                 case CharacterClass.Warrior:
-                    // 전사: 높은 체력, 물리 공격력, 물리 방어력
-                    Health += 20;
-                    PhysicalAttack += 10;
-                    PhysicalDefense += 15;
-                    Speed += 5;
-                    Mana += 5;
-                    MagicalAttack += 2;
-                    MagicalDefense += 5;
-                    HealingPower += 3;
-                    SelfHealingPower += 4;
+                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Sword);
                     break;
                 case CharacterClass.Knight:
-                    // 나이트: 높은 마나, 마법 방어력
-                    Mana += 25;
-                    MagicalDefense += 15;
-                    Health += 15;
-                    PhysicalAttack += 5;
-                    MagicalAttack += 10;
-                    Speed += 3;
-                    PhysicalDefense += 10;
-                    HealingPower += 5;
-                    SelfHealingPower += 3;
+                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Sword);
                     break;
                 case CharacterClass.WhiteMage:
-                    // 백마도사: 높은 타인 회복력, 마법 방어력
-                    HealingPower += 20;
-                    MagicalDefense += 15;
-                    Health += 10;
-                    Mana += 15;
-                    PhysicalAttack += 2;
-                    MagicalAttack += 10;
-                    Speed += 3;
-                    PhysicalDefense += 5;
-                    SelfHealingPower += 10;
+                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.WhiteMageStaff);
                     break;
                 case CharacterClass.Monk:
-                    // 수도승: 높은 물리 공격력, 속도
-                    PhysicalAttack += 15;
-                    Speed += 10;
-                    Health += 10;
-                    Mana += 5;
-                    MagicalAttack += 3;
-                    PhysicalDefense += 8;
-                    MagicalDefense += 5;
-                    HealingPower += 3;
-                    SelfHealingPower += 4;
+                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Knuckle);
                     break;
                 case CharacterClass.Dragoon:
-                    // 용기사: 균형잡힌 공격력과 방어력
-                    PhysicalAttack += 12;
-                    PhysicalDefense += 12;
-                    Health += 15;
-                    Mana += 10;
-                    Speed += 5;
-                    MagicalAttack += 5;
-                    MagicalDefense += 7;
-                    HealingPower += 3;
-                    SelfHealingPower += 5;
-                    break;
+                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Spear);
+                    break;  
                 case CharacterClass.Bard:
-                    // 음유시인: 높은 속도, 중간 물리 공격력
-                    Speed += 15;
-                    PhysicalAttack += 10;
-                    Health += 10;
-                    Mana += 10;
-                    MagicalAttack += 5;
-                    PhysicalDefense += 5;
-                    MagicalDefense += 5;
-                    HealingPower += 7;
-                    SelfHealingPower += 3;
+                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Bow);
                     break;
                 case CharacterClass.BlackMage:
-                    // 흑마도사: 높은 마법 공격력, 마나
-                    MagicalAttack += 20;
-                    Mana += 20;
-                    Health += 5;
-                    PhysicalAttack += 3;
-                    Speed += 4;
-                    PhysicalDefense += 3;
-                    MagicalDefense += 10;
-                    HealingPower += 5;
-                    SelfHealingPower += 3;
+                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.BlackMageStaff);
                     break;
             }
         }
 
-        public void LevelUp()
+        public void EquipWeapon(Weapon weapon)
         {
-            Level++;
+            EquippedWeapon = weapon;
+            CharacterStatsManager.ApplyWeaponStats(this, weapon, apply: true);
+        }
 
+        public void UnequipWeapon()
+        {
+            if (EquippedWeapon != null)
+            {
+                CharacterStatsManager.ApplyWeaponStats(this, EquippedWeapon, apply: false);
+                EquippedWeapon = null;
+            }
+        }
+
+        public EquipmentStats GetTotalEquipmentStats()
+        {
+            EquipmentStats totalStats = new EquipmentStats();
+
+            if (EquippedWeapon != null)
+            {
+                totalStats.Health += EquippedWeapon.Health;
+                totalStats.Mana += EquippedWeapon.Mana;
+                totalStats.PhysicalAttack += EquippedWeapon.PhysicalAttack;
+                totalStats.MagicalAttack += EquippedWeapon.MagicalAttack;
+                totalStats.PhysicalDefense += EquippedWeapon.PhysicalDefense;
+                totalStats.MagicalDefense += EquippedWeapon.MagicalDefense;
+                totalStats.Speed += EquippedWeapon.Speed;
+                totalStats.HealingPower += EquippedWeapon.HealingPower;
+                totalStats.SelfHealingPower += EquippedWeapon.SelfHealingPower;
+                totalStats.Luck += EquippedWeapon.Luck;
+                totalStats.Critical += EquippedWeapon.Critical;
+            }
+
+            // 다른 장비들에 대한 스테이터스 합산 로직...
+            // 예: 갑옷, 방패 등
+
+            return totalStats;
+        }
+
+        public string GetJobClassNameInKorean()
+        {
             switch (JobClass)
             {
                 case CharacterClass.Warrior:
-                    // 전사: 체력, 물리 공격력, 물리 방어력 우선 증가
-                    Health += 10;
-                    Mana += 2;
-                    PhysicalAttack += 5;
-                    MagicalAttack += 1;
-                    PhysicalDefense += 5;
-                    MagicalDefense += 2;
-                    Speed += 2;
-                    HealingPower += 1;
-                    SelfHealingPower += 1;
-                    break;
+                    return "전사";
                 case CharacterClass.Knight:
-                    // 나이트: 마나, 마법 방어력, 물리 방어력 우선 증가
-                    Health += 5;
-                    Mana += 10;
-                    PhysicalAttack += 2;
-                    MagicalAttack += 3;
-                    PhysicalDefense += 4;
-                    MagicalDefense += 5;
-                    Speed += 2;
-                    HealingPower += 2;
-                    SelfHealingPower += 1;
-                    break;
+                    return "나이트";
                 case CharacterClass.WhiteMage:
-                    // 백마도사(WhiteMage): 타인 회복력과 마법 방어력, 마나 우선 증가
-                    Health += 4;
-                    Mana += 5;
-                    PhysicalAttack += 1;
-                    MagicalAttack += 3;
-                    PhysicalDefense += 3;
-                    MagicalDefense += 5;
-                    Speed += 2;
-                    HealingPower += 8;
-                    SelfHealingPower += 4;
-                    break;
+                    return "백마도사";
                 case CharacterClass.Monk:
-                    // 수도승(Monk)
-                    Health += 6;
-                    Mana += 2;
-                    PhysicalAttack += 7;
-                    MagicalAttack += 1;
-                    PhysicalDefense += 3;
-                    MagicalDefense += 2;
-                    Speed += 4;
-                    HealingPower += 1;
-                    SelfHealingPower += 1;
-                    break;
-
+                    return "수도승";
                 case CharacterClass.Dragoon:
-                    // 용기사(Dragoon)
-                    Health += 8;
-                    Mana += 3;
-                    PhysicalAttack += 6;
-                    MagicalAttack += 2;
-                    PhysicalDefense += 4;
-                    MagicalDefense += 3;
-                    Speed += 3;
-                    HealingPower += 1;
-                    SelfHealingPower += 1;
-                    break;
-
+                    return "용기사";
                 case CharacterClass.Bard:
-                    // 음유시인(Bard)
-                    Health += 4;
-                    Mana += 3;
-                    PhysicalAttack += 4;
-                    MagicalAttack += 2;
-                    PhysicalDefense += 2;
-                    MagicalDefense += 2;
-                    Speed += 6;
-                    HealingPower += 3;
-                    SelfHealingPower += 2;
-                    break;
-
+                    return "음유시인";
                 case CharacterClass.BlackMage:
-                    // 흑마도사(BlackMage)
-                    Health += 3;
-                    Mana += 6;
-                    PhysicalAttack += 1;
-                    MagicalAttack += 7;
-                    PhysicalDefense += 2;
-                    MagicalDefense += 4;
-                    Speed += 2;
-                    HealingPower += 2;
-                    SelfHealingPower += 1;
-                    break;
+                    return "흑마도사";
+                default:
+                    return "알 수 없음";
             }
         }
+    }
+    public class EquipmentStats
+    {
+        public int Health { get; set; }
+        public int Mana { get; set; }
+        public int PhysicalAttack { get; set; }
+        public int MagicalAttack { get; set; }
+        public int PhysicalDefense { get; set; }
+        public int MagicalDefense { get; set; }
+        public int Speed { get; set; }
+        public int HealingPower { get; set; }
+        public int SelfHealingPower { get; set; }
+        public int Luck { get; set; }
+        public int Critical { get; set; }
 
-        public void GainExperience(int amount)
-        {
-            Experience += amount;
-            CheckLevelUp();
-        }
-
-        private void CheckLevelUp()
-        {
-            // 경험치에 따른 레벨업 로직
-            // 예: 100 경험치마다 레벨업
-            while (Experience >= 100 * Level)
-            {
-                Experience -= 100 * Level;
-                LevelUp();
-            }
-        }
-
-        // 캐릭터 관련 추가 메소드나 프로퍼티
     }
 }

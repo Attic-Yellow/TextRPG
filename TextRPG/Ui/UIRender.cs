@@ -37,14 +37,14 @@ namespace TextRPG.Ui
             char horizontal = '─';
             string vertical = "│";
 
-            for (int i = 0; i < itemCount; i++)
+            for (int i = 0; i < itemCount + 1; i++)
             {
                 Console.SetCursorPosition((Console.WindowWidth - width) / 2 + 3, (Console.WindowHeight) - 28 + i);
                 if (i == 0)
                 {
                     Console.Write($"{topLeft}{new string(horizontal, width - 2)}{topRight}");
                 }
-                else if (i == itemCount - 1)
+                else if (i == itemCount)
                 {
                     Console.Write($"{bottomLeft}{new string(horizontal, width - 2)}{bottomRight}");
                 }
