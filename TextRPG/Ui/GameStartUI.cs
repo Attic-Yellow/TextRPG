@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TextRPG.DataManager;
 using TextRPG.Entity;
+using TextRPG.Entity.Characters;
 using TextRPG.GameEngine;
 using TextRPG.Items.Equipment.Weapons;
 using TextRPG.Ui.BoxHandlers;
@@ -68,6 +69,7 @@ namespace TextRPG.Ui
                 case 2: // 게임 설정
                     Console.Clear();
                     // 게임 설정 UI를 여기서 호출합니다.
+                    SettingMenuDisplay(inputHandler);
                     break;
                 case 3: // 게임 종료
                     Environment.Exit(0);
@@ -88,7 +90,6 @@ namespace TextRPG.Ui
         // 7. 흑마도사
         // 8. 뒤로 가기
         // 1, 2, 3, 4, 5, 6, 7, 8을 엔터키 입력시 해당 메뉴로 이동합니다.
-
         private static readonly List<string> characterMenuNumber = new List<string>
         {
             "전사", // 전사
@@ -122,12 +123,14 @@ namespace TextRPG.Ui
                 characterMenuBoxHandler.Navigate(key);
 
                 if (key == ConsoleKey.Enter)
-                {
+                {   
+                    // 캐릭터 이름 설정 UI를 여기서 호출합니다.
                     CharacterMenuPerformAction(inputHandler, characterMenuBoxHandler.Box.SelectedIndex);
                 }
                 else if (key == ConsoleKey.Z)
                 {
-
+                    // 시작 화면 UI로 돌아가기
+                    StartMenuDisplay(inputHandler);
                 }
                 else if (key == ConsoleKey.X)
                 {
@@ -196,27 +199,17 @@ namespace TextRPG.Ui
             }
         }
 
+        // 캐릭터 클래스에 따라 캐릭터를 생성합니다.
+        // Entity폴더의 Character클래스를 참고하여 캐릭터를 생성합니다.
+        // 캐릭터를 생성할 때, 캐릭터 클래스에 따라 능력치를 설정합니다.
+        // 캐릭터 클래스에 따라 능력치를 설정할 때, 능력치는 랜덤으로 설정합니다.
         private static Character CreateCharacterForClass(CharacterClass characterClass)
         {
-            switch (characterClass)
-            {
-                case CharacterClass.Warrior:
-                    return new Character("전사", CharacterClass.Warrior, 1, 100, 50, 10, 5, 5, 15, 10, 3, 4, 0);
-                case CharacterClass.Knight:
-                    return new Character("나이트", CharacterClass.Knight, 1, 90, 60, 8, 7, 4, 12, 15, 5, 3, 0);
-                case CharacterClass.WhiteMage:
-                    return new Character("백마도사", CharacterClass.WhiteMage, 1, 80, 70, 4, 9, 6, 10, 20, 7, 5, 0);
-                case CharacterClass.Monk:
-                    return new Character("수도승", CharacterClass.Monk, 1, 95, 55, 12, 6, 7, 13, 8, 4, 3, 0);
-                case CharacterClass.Dragoon:
-                    return new Character("용기사", CharacterClass.Dragoon, 1, 90, 60, 11, 7, 8, 12, 12, 5, 4, 0);
-                case CharacterClass.Bard:
-                    return new Character("음유시인", CharacterClass.Bard, 1, 85, 65, 9, 8, 10, 10, 10, 6, 4, 0);
-                case CharacterClass.BlackMage:
-                    return new Character("흑마도사", CharacterClass.BlackMage, 1, 75, 75, 5, 12, 6, 8, 15, 6, 4, 0);
-                default:
-                    return null;
-            }
+            string name = "Default Name";
+            Character character = new Character(name, characterClass, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+            character.JobClass = characterClass;
+            CharacterStatsManager.InitClass(character);
+            return character;
         }
 
         private static void CharacterStatsDisplay(Character character)
@@ -225,50 +218,43 @@ namespace TextRPG.Ui
 
             int boxX = (Console.WindowWidth - 110) / 2 + 3;
             int boxY = (Console.WindowHeight + 1) / 2 + 5;
-            int boxWidth = 55;  
+            int boxWidth = 55;
             int boxHeight = 18;
 
-            int totalHealth = character.Health + (character.EquippedWeapon != null ? character.EquippedWeapon.Health : 0);
-            int totalMana = character.Mana + (character.EquippedWeapon != null ? character.EquippedWeapon.Mana : 0);
-            int totalPhysicalAttack = character.PhysicalAttack + (character.EquippedWeapon != null ? character.EquippedWeapon.PhysicalAttack : 0);
-            int totalMagicalAttack = character.MagicalAttack + (character.EquippedWeapon != null ? character.EquippedWeapon.MagicalAttack : 0);
-            int totalPhysicalDefense = character.PhysicalDefense + (character.EquippedWeapon != null ? character.EquippedWeapon.PhysicalDefense : 0);
-            int totalMagicalDefense = character.MagicalDefense + (character.EquippedWeapon != null ? character.EquippedWeapon.MagicalDefense : 0);
-            int totalSpeed = character.Speed + (character.EquippedWeapon != null ? character.EquippedWeapon.Speed : 0);
-            int totalHealingPower = character.HealingPower + (character.EquippedWeapon != null ? character.EquippedWeapon.HealingPower : 0);
-            int totalSelfHealingPower = character.SelfHealingPower + (character.EquippedWeapon != null ? character.EquippedWeapon.SelfHealingPower : 0);
-            int totalLuck = character.Luck + (character.EquippedWeapon != null ? character.EquippedWeapon.Luck : 0);
-            int totalCritical = character.Critical + (character.EquippedWeapon != null ? character.EquippedWeapon.Critical : 0);
-
-
+            EquipmentStats totalStats = character.GetTotalEquipmentStats();
 
             UIRender.DrawBoxWithPosition(boxX, boxY, boxWidth, boxHeight);
+            DisplayCharacterStats(character, totalStats);
+        }
+
+        private static void DisplayCharacterStats(Character character, EquipmentStats totalStats)
+        {
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 5);
-            Console.Write($"직업 스탯 : 장비 미착용 / 착용");
-            Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 6);
-            Console.Write($"레벨: {character.Level} ");
+            Console.Write($"레벨:\t{character.Level} ");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 7);
-            Console.Write($"체력: {character.Health} / {totalHealth}");
+            Console.Write($"직업 스탯 : 장비 미착용 / 착용");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 8);
-            Console.Write($"마나: {character.Mana} / {totalMana}");
+            Console.Write($"체력:\t\t{character.Health} / {totalStats.Health}");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 9);
-            Console.Write($"힘: {character.PhysicalAttack} / {totalPhysicalAttack}");
+            Console.Write($"마나:\t\t{character.Mana} / {totalStats.Mana}");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 10);
-            Console.Write($"지능: {character.MagicalAttack} / {totalMagicalAttack}");
+            Console.Write($" 힘:\t\t{character.PhysicalAttack} / {totalStats.PhysicalAttack}");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 11);
-            Console.Write($"물리 방어력: {character.PhysicalDefense} / {totalPhysicalDefense}");
+            Console.Write($"지능:\t\t{character.MagicalAttack} / {totalStats.MagicalAttack}");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 12);
-            Console.Write($"마법 방어력: {character.MagicalDefense} / {totalMagicalDefense}");
+            Console.Write($"물리 방어력:\t{character.PhysicalDefense} / {totalStats.PhysicalDefense}");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 13);
-            Console.Write($"민첩: {character.Speed} / {totalSpeed}");
+            Console.Write($"마법 방어력:\t{character.MagicalDefense} / {totalStats.MagicalDefense}");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 14);
-            Console.Write($"정신력: {character.HealingPower} / {totalHealingPower}");
+            Console.Write($"민첩:\t\t{character.Speed} / {totalStats.Speed}");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 15);
-            Console.Write($"신앙: {character.SelfHealingPower} / {totalSelfHealingPower}");
+            Console.Write($"정신력:\t\t{character.HealingPower} / {totalStats.HealingPower}");
             Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 16);
-            Console.Write($"행운: {character.Luck} / {totalLuck}");
-            Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 16);
-            Console.Write($"치명타: {character.Critical} / {totalCritical}");
+            Console.Write($"신앙:\t\t{character.SelfHealingPower} / {totalStats.SelfHealingPower}");
+            Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 17);
+            Console.Write($"행운:\t\t{character.Luck} / {totalStats.Luck}");
+            Console.SetCursorPosition((Console.WindowWidth - 70) / 2 + 3, (Console.WindowHeight + 5) / 2 + 18);
+            Console.Write($"치명타 확률:\t{character.Critical} / {totalStats.Critical}");
         }
 
         private static void CharacterEquipStatsDisplay(Character character)
@@ -282,32 +268,36 @@ namespace TextRPG.Ui
             int boxHeight = 18;
 
             UIRender.DrawBoxWithPosition(boxX, boxY, boxWidth, boxHeight);
+            DisplayEquipmentStats(totalStats);
+        }
+
+        private static void DisplayEquipmentStats(EquipmentStats totalStats)
+        {
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 5);
             Console.Write($"장비 능력치 총합");
 
-            Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 6);
-            Console.Write($"체력: {totalStats.Health}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 7);
-            Console.Write($"마나: {totalStats.Mana}");
+            Console.Write($"체력:\t\t{totalStats.Health}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 8);
-            Console.Write($"힘: {totalStats.PhysicalAttack}");
+            Console.Write($"마나:\t\t{totalStats.Mana}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 9);
-            Console.Write($"지능: {totalStats.MagicalAttack}");
+            Console.Write($" 힘:\t\t\t{totalStats.PhysicalAttack}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 10);
-            Console.Write($"물리 방어력: {totalStats.PhysicalDefense}");
+            Console.Write($"지능:\t\t{totalStats.MagicalAttack}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 11);
-            Console.Write($"마법 방어력: {totalStats.MagicalDefense}");
+            Console.Write($"물리 방어력:\t\t{totalStats.PhysicalDefense}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 12);
-            Console.Write($"민첩: {totalStats.Speed}");
+            Console.Write($"마법 방어력:\t\t{totalStats.MagicalDefense}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 13);
-            Console.Write($"정신력: {totalStats.HealingPower}");
+            Console.Write($"민첩:\t\t{totalStats.Speed}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 14);
-            Console.Write($"신앙: {totalStats.SelfHealingPower}");
+            Console.Write($"정신력:\t\t{totalStats.HealingPower}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 15);
-            Console.Write($"행운: {totalStats.Luck}");
+            Console.Write($"신앙:\t\t{totalStats.SelfHealingPower}");
             Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 16);
-            Console.Write($"행운: {totalStats.Critical}");
-
+            Console.Write($"행운:\t\t{totalStats.Luck}");
+            Console.SetCursorPosition((Console.WindowWidth + 40) / 2 + 3, (Console.WindowHeight + 5) / 2 + 17);
+            Console.Write($"치명타 확률:\t\t{totalStats.Critical}");
         }
 
         private static void DisplaySelectedCharacterInfo()
@@ -325,13 +315,17 @@ namespace TextRPG.Ui
 
             for (int i = 0; i < characters.Count; i++)
             {
-
-                UIRender.DrawBoxWithPosition(boxX + boxWidth * (i + 1), boxY, boxWidth, boxHeight);
-                Console.SetCursorPosition(boxX + boxWidth * (i + 1) + 3, (Console.WindowHeight - 22));
-                Console.WriteLine($"직업: {characters[i].JobClass}");
-                Console.SetCursorPosition(boxX + boxWidth * (i + 1) + 3, (Console.WindowHeight - 21));
-                Console.WriteLine($"이름: {characters[i].Name}");
+                DisplayCharacterBox(characters[i], boxX + boxWidth * (i + 1), boxY, boxWidth, boxHeight);
             }
+        }
+
+        private static void DisplayCharacterBox(Character character, int boxX, int boxY, int boxWidth, int boxHeight)
+        {
+            UIRender.DrawBoxWithPosition(boxX, boxY, boxWidth, boxHeight);
+            Console.SetCursorPosition(boxX + 3, (Console.WindowHeight - 22));
+            Console.WriteLine($"직업: {character.JobClass}");
+            Console.SetCursorPosition(boxX + 3, (Console.WindowHeight - 21));
+            Console.WriteLine($"이름: {character.Name}");
         }
 
         // 캐릭터 이름 설정 UI를 구현합니다.
@@ -339,8 +333,6 @@ namespace TextRPG.Ui
         // 이름을 입력하세요. 라는 메시지를 출력하고, 이름을 입력받습니다.
         // 이름을 성공적으로 설정하면, [ name ]으로 이름이 설정되었습니다. 라는 메시지를 출력합니다.
         // Entity폴더의 Character클래스의 직업 능력치와 이름을 PlayerData클래스에 저장한 뒤, 선택 UI로 돌아갑니다.
-
-
         private static Character currentPlayerCharacter;
 
         private static void CharacterNameDisplay(InputHandler inputHandler)

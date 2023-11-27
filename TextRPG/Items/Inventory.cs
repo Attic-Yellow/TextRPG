@@ -21,6 +21,11 @@ namespace TextRPG.Items
             return items.ElementAtOrDefault(index);
         }
 
+        public List<EquipmentItem> GetAllItems()
+        {
+            return new List<EquipmentItem>(items);
+        }
+
         public bool RemoveItem(EquipmentItem item)
         {
             return items.Remove(item);

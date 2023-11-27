@@ -100,6 +100,5 @@ namespace TextRPG.GameEngine
     {
         StartMenu,
         MainPage,
-        // 필요에 따라 추가 상태를 정의
     }
 }

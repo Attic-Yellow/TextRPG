@@ -6,6 +6,7 @@ using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using TextRPG.Entity.Characters;
+using TextRPG.Items;
 using TextRPG.Items.Equipment.Weapons;
 
 namespace TextRPG.Entity
@@ -51,28 +52,81 @@ namespace TextRPG.Entity
 
         private void EquipDefaultWeapon()
         {
+            List<WeaponType> weaponTypes = new List<WeaponType>();
+
             switch (JobClass)
             {
                 case CharacterClass.Warrior:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Sword);
+                    weaponTypes.Add(WeaponType.Axe);
                     break;
                 case CharacterClass.Knight:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Sword);
+                    weaponTypes.Add(WeaponType.Sword);
                     break;
                 case CharacterClass.WhiteMage:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.WhiteMageStaff);
+                    weaponTypes.Add(WeaponType.WhiteMageStaff);
                     break;
                 case CharacterClass.Monk:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Knuckle);
+                    weaponTypes.Add(WeaponType.Knuckle);
                     break;
                 case CharacterClass.Dragoon:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Spear);
+                    weaponTypes.Add(WeaponType.Spear);
                     break;  
                 case CharacterClass.Bard:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Bow);
+                    weaponTypes.Add(WeaponType.Bow);
                     break;
                 case CharacterClass.BlackMage:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.BlackMageStaff);
+                    weaponTypes.Add(WeaponType.BlackMageStaff);
+                    break;
+            }
+        }
+
+        private void EquipDefaultEquipment()
+        {
+            List<EquipmentType> equipmentTypes = new List<EquipmentType>();
+
+            switch (JobClass)
+            {
+                case CharacterClass.Warrior:
+                    equipmentTypes.Add(EquipmentType.Hat);
+                    equipmentTypes.Add(EquipmentType.Top);
+                    equipmentTypes.Add(EquipmentType.Gloves);
+                    equipmentTypes.Add(EquipmentType.Bottom);
+                    equipmentTypes.Add(EquipmentType.Shoes);
+                    break;
+                case CharacterClass.Knight:
+                    equipmentTypes.Add(EquipmentType.Hat);
+                    equipmentTypes.Add(EquipmentType.Top);
+                    equipmentTypes.Add(EquipmentType.Gloves);
+                    equipmentTypes.Add(EquipmentType.Bottom);
+                    equipmentTypes.Add(EquipmentType.Shoes);
+                    break;
+                case CharacterClass.WhiteMage:
+                    equipmentTypes.Add(EquipmentType.Top);
+                    equipmentTypes.Add(EquipmentType.Bottom);
+                    equipmentTypes.Add(EquipmentType.Shoes);
+                    break;
+                case CharacterClass.Monk:
+                    equipmentTypes.Add(EquipmentType.Top);
+                    equipmentTypes.Add(EquipmentType.Gloves);
+                    equipmentTypes.Add(EquipmentType.Bottom);
+                    break;
+                case CharacterClass.Dragoon:
+                    equipmentTypes.Add(EquipmentType.Hat);
+                    equipmentTypes.Add(EquipmentType.Top);
+                    equipmentTypes.Add(EquipmentType.Gloves);
+                    equipmentTypes.Add(EquipmentType.Bottom);
+                    equipmentTypes.Add(EquipmentType.Shoes);
+                    break;
+                case CharacterClass.Bard:
+                    equipmentTypes.Add(EquipmentType.Top);
+                    equipmentTypes.Add(EquipmentType.Gloves);
+                    equipmentTypes.Add(EquipmentType.Bottom);
+                    equipmentTypes.Add(EquipmentType.Shoes);
+                    break;
+                case CharacterClass.BlackMage:
+                    equipmentTypes.Add(EquipmentType.Top);
+                    equipmentTypes.Add(EquipmentType.Bottom);
+                    equipmentTypes.Add(EquipmentType.Shoes);
                     break;
             }
         }

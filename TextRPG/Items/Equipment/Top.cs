@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextRPG.Items.Equipment.Weapons;
 
 namespace TextRPG.Items.Equipment
 {
@@ -12,6 +13,8 @@ namespace TextRPG.Items.Equipment
     : base(grade, name, description, EquipmentType.Top, health, mana, physicalAttack, magicalAttack, physicalDefense, magicalDefense, speed, healingPower, selfHealingPower, luck, critical, durability)
         {
         }
+
+       
     }
     
 }

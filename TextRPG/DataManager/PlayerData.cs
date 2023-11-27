@@ -12,10 +12,13 @@ namespace TextRPG.DataManager
 {
     public class PlayerData
     {
+
         public List<Character> characters { get; set; }
         public Character PlayerCharacter { get;  set; }
-        private CharacterStatsManager characterStatsManager = new CharacterStatsManager();
         public Inventory Inventory { get; private set; }
+
+        private CharacterStatsManager characterStatsManager = new CharacterStatsManager();
+
         public PlayerData()
         {
             characters = new List<Character>();
@@ -78,6 +81,22 @@ namespace TextRPG.DataManager
                 }
                 // 갑옷이나 기타 장비에 대한 처리...
             }
+        }
+
+        public List<EquipmentItem> GetEquippedItems()
+        {
+            var equippedItems = new List<EquipmentItem>();
+
+            if (PlayerCharacter != null)
+            {
+                if (PlayerCharacter.EquippedWeapon != null)
+                {
+                    equippedItems.Add(PlayerCharacter.EquippedWeapon);
+                }
+                // 기타 장비에 대한 추가...
+            }
+
+            return equippedItems;
         }
 
         public void LevelUp()

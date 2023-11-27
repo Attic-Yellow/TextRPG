@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TextRPG.DataManager;
 using TextRPG.Entity;
+using TextRPG.Items;
 using TextRPG.Ui.BoxHandlers;
 using TextRPG.Util;
 
@@ -292,15 +293,14 @@ namespace TextRPG.Ui
                 characterMenuBoxHandler.HighlightSelectedItem();
                 jobBoxHandler.GameMenuSecondOnlyPlayerDisplay();
                 jobBoxHandler.GameMenuFourthOnlyPlayerDisplay();
-                jobBoxHandler.HighlightSelectedItem();
                 ChooseItemToUseBoxHandler.GameMenuThirdDisplay();
-                ChooseItemToUseBoxHandler.GameMenuFifthOnlyPlayerDisplay();
+
                 var key = inputHandler.GetUserInput();
                 ChooseItemToUseBoxHandler.Navigate(key);
 
                 if (key == ConsoleKey.Enter || key == ConsoleKey.C)
                 {
-                    ChooseItemToUsePerformAction(inputHandler, ChooseItemToUseBoxHandler.Box.SelectedIndex);
+                    ChooseItemToUsePerformAction(inputHandler, ChooseItemToUseBoxHandler.Box.SelectedIndex, selectedCharacter, jobBoxHandler);
                     continueDisplay = false;
                 }
                 else if (key == ConsoleKey.Z)
@@ -318,17 +318,89 @@ namespace TextRPG.Ui
             }
         }
 
-        private static void ChooseItemToUsePerformAction(InputHandler inputHandler, int selectedIndex)
+        private static void ChooseItemToUsePerformAction(InputHandler inputHandler, int selectedIndex, Character selectedCharacter, BoxHandler jobBoxHandler)
         {
             switch (selectedIndex)
             {
                 case 0: // 장비 아이템
-                    // Equip item functionality
+                    // 선택된 캐릭터의 장비
+                    EquipItemDisplay(inputHandler, selectedCharacter, jobBoxHandler);
+
                     break;
                 case 1: // 소모품
                     // Use item functionality
                     break;
             }
         }
+
+        // 장비 선택시 아이템 리스트를 보여줍니다.
+        // Ui폴더의 UIRender 클래스의 DrawCharacterMenuWorkBox 메서드를 사용하여 아이템 리스트를 구현합니다.
+        // Ui폴더의 BoxHandlers 폴더의 BoxHandler 클래스의 GameMenuFifthOnlyPlayerDisplay 메서드를 사용하여 아이템 리스트를 구현합니다.
+        // DataMAnager 폴더의 PlayerData 클래스의 GetCharacter 메서드를 사용하여 캐릭터를 가져옵니다.
+        // DataMAnager 폴더의 PlayerData 클래스의 GetItems 메서드를 사용하여 아이템 리스트를 가져옵니다.
+        private static void EquipItemDisplay(InputHandler inputHandler, Character selectedCharacter, BoxHandler jobBoxHandler)
+        {
+            var playerData = SingletonManager.GetInstance();
+            var equippedItems = playerData.GetEquippedItems();
+            var itemOptions = equippedItems.Select(item => item.Name).ToList();
+
+            var itemBoxHandler = new BoxHandler(itemOptions);
+
+            bool continueDisplay = true;
+            while (continueDisplay)
+            {
+                Console.Clear();
+                UIRender.DrawCharacterMenuBox(characterMenuBoxHandler.Box.Width, characterMenuBoxHandler.Box.Menus.Count);
+                UIRender.DrawCharacterMenuWorkBox(jobBoxHandler.Box.Width, jobBoxHandler.Box.Menus.Count);
+                characterMenuBoxHandler.GameMenuFirstDisplay();
+                characterMenuBoxHandler.HighlightSelectedItem();
+                jobBoxHandler.GameMenuSecondOnlyPlayerDisplay();
+                jobBoxHandler.GameMenuFourthOnlyPlayerDisplay();
+                ChooseItemToUseBoxHandler.GameMenuThirdDisplay();
+                ChooseItemToUseBoxHandler.GameMenuFifthOnlyPlayerDisplay();
+                itemBoxHandler.GameMenuFifthOnlyPlayerDisplay();
+
+                var key = inputHandler.GetUserInput();
+                itemBoxHandler.Navigate(key);
+
+                if (key == ConsoleKey.Enter || key == ConsoleKey.C)
+                {
+                    int selectedItemIndex = itemBoxHandler.Box.SelectedIndex;
+
+                    if (selectedItemIndex >= 0 && selectedItemIndex < equippedItems.Count)
+                    {
+                        var selectedItem = equippedItems[selectedItemIndex];
+                        // 선택한 장비에 대한 처리...
+                    }
+                    continueDisplay = false;
+                }
+                else if (key == ConsoleKey.Z)
+                {
+                    // 메인으로 가기
+                    MainMenuDisplay(inputHandler);
+                    continueDisplay = false;
+                }
+                else if (key == ConsoleKey.X)
+                {
+                    // 뒤로 가기
+                    ChooseItemToUseDisplay(inputHandler, selectedCharacter, jobBoxHandler);
+                    continueDisplay = false;
+                }
+            }
+        }
+
+  /*      private static void EquipItemPerformAction(InputHandler inputHandler, EquipmentItem selectedItem, Character selectedCharacter, BoxHandler jobBoxHandler)
+        {
+            var playerData = SingletonManager.GetInstance();
+
+            playerData.RemoveItemFromInventory(selectedItem);
+            playerData.EquipItemToCharacter(selectedItem);
+
+            Console.Clear();
+            Console.WriteLine($"{selectedItem.Name}을(를) {selectedCharacter.Name}에게 장착하였습니다.");
+            Thread.Sleep(1000);
+            ChooseItemToUseDisplay(inputHandler, selectedCharacter, jobBoxHandler);
+        }*/
+
     }
 }
