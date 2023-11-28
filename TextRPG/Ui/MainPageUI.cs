@@ -7,6 +7,7 @@ using System.Text.Json;
 using System.Threading.Tasks;
 using TextRPG.DataManager;
 using TextRPG.Entity;
+using TextRPG.Items;
 using TextRPG.Ui.BoxHandlers;
 using TextRPG.Util;
 
@@ -223,7 +224,6 @@ namespace TextRPG.Ui
         // 캐릭터 선택이 이루어지면 Ui폴더의 BoxHandlers 폴더의 BoxHandler 클래스의 GameMenuThirdDisplay 메서드를 사용하여 장비, 소모품을 구현합니다.
         // Ui폴더의 BoxHandlers 폴더의 BoxHandler 클래스의 GameMenuFourthDisplay 메서드를 사용하여 커서가 가르키는 캐릭터의 능력치를 보여줍니다.
         // DataMAnager 폴더의 PlayerData 클래스의 GetCharacter 메서드를 사용하여 캐릭터를 가져옵니다.
-
         private static void CharacterJobsDisplay(InputHandler inputHandler)
         {
             var playerData = SingletonManager.GetInstance();
@@ -294,13 +294,13 @@ namespace TextRPG.Ui
                 jobBoxHandler.GameMenuFourthOnlyPlayerDisplay();
                 jobBoxHandler.HighlightSelectedItem();
                 ChooseItemToUseBoxHandler.GameMenuThirdDisplay();
-                ChooseItemToUseBoxHandler.GameMenuFifthOnlyPlayerDisplay();
+
                 var key = inputHandler.GetUserInput();
                 ChooseItemToUseBoxHandler.Navigate(key);
 
                 if (key == ConsoleKey.Enter || key == ConsoleKey.C)
                 {
-                    ChooseItemToUsePerformAction(inputHandler, ChooseItemToUseBoxHandler.Box.SelectedIndex);
+                    ChooseItemToUsePerformAction(inputHandler, ChooseItemToUseBoxHandler.Box.SelectedIndex, jobBoxHandler);
                     continueDisplay = false;
                 }
                 else if (key == ConsoleKey.Z)
@@ -318,16 +318,64 @@ namespace TextRPG.Ui
             }
         }
 
-        private static void ChooseItemToUsePerformAction(InputHandler inputHandler, int selectedIndex)
+        private static void ChooseItemToUsePerformAction(InputHandler inputHandler, int selectedIndex, BoxHandler jobBoxHandler)
         {
             switch (selectedIndex)
             {
                 case 0: // 장비 아이템
-                    // Equip item functionality
+                    // 장비 선택
+                    EquippedAndInventoryItemsDisplay(inputHandler, jobBoxHandler);
+
                     break;
                 case 1: // 소모품
                     // Use item functionality
                     break;
+            }
+        }
+
+        private static void EquippedAndInventoryItemsDisplay(InputHandler inputHandler, BoxHandler jobBoxHandler)
+        {
+            // SingletonManager를 통해 현재 선택된 캐릭터를 가져옵니다.
+            var selectedCharacter = SingletonManager.GetInstance().PlayerCharacter;
+
+            // 착용 중인 장비 목록 생성
+            List<string> equippedItemNames = new List<string>();
+
+            // 현재 착용 중인 장비 추가
+            if (selectedCharacter.EquippedWeapon != null)
+            {
+                equippedItemNames.Add(selectedCharacter.EquippedWeapon.Name + " (착용 중)");
+            }
+
+            var itemBoxHandler = new BoxHandler(equippedItemNames);
+            bool continueDisplay = true;
+
+            while (continueDisplay)
+            {
+                Console.Clear();
+                UIRender.DrawCharacterMenuBox(characterMenuBoxHandler.Box.Width, characterMenuBoxHandler.Box.Menus.Count);
+                UIRender.DrawCharacterMenuWorkBox(jobBoxHandler.Box.Width, jobBoxHandler.Box.Menus.Count);
+                characterMenuBoxHandler.GameMenuFirstDisplay();
+                characterMenuBoxHandler.HighlightSelectedItem();
+                jobBoxHandler.GameMenuSecondOnlyPlayerDisplay();
+                jobBoxHandler.GameMenuFourthOnlyPlayerDisplay();
+                jobBoxHandler.HighlightSelectedItem();
+                ChooseItemToUseBoxHandler.GameMenuThirdDisplay();
+                itemBoxHandler.GameMenuFifthOnlyPlayerDisplay();
+
+                var key = inputHandler.GetUserInput();
+                itemBoxHandler.Navigate(key);
+
+                if (key == ConsoleKey.Enter || key == ConsoleKey.C)
+                {
+                    // 선택된 아이템에 대한 추가 로직 (선택적으로 구현)
+                    continueDisplay = false;
+                }
+                else if (key == ConsoleKey.Z || key == ConsoleKey.X)
+                {
+                    // 뒤로 가기 또는 메인 메뉴로 가기
+                    continueDisplay = false;
+                }
             }
         }
     }

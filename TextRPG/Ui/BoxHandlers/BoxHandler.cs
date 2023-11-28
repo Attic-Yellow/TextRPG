@@ -319,6 +319,33 @@ namespace TextRPG.Ui.BoxHandlers
             }
         }
 
+        public void GameMenuSixthOnlyPlayerDisplay()
+        {
+            int topOffset = (Console.WindowHeight - Box.Menus.Count) / 2 + 2;
+            int leftOffset = (Console.WindowWidth - Box.Width) / 2 + (65 - Box.Menus.Count);
+
+            for (int i = 0; i < Box.Menus.Count; i++)
+            {
+                Console.SetCursorPosition(leftOffset, topOffset++);
+
+                if (i == Box.SelectedIndex)
+                {
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.Write(Box.Menus[i] + " ◀");
+                    Console.ResetColor();
+                }
+                else
+                {
+                    Console.Write(Box.Menus[i]);
+                }
+
+                if (i < Box.Menus.Count - 1)
+                {
+                    Console.WriteLine();
+                }
+            }
+        }
+
         private int GetEquippedStat(int baseStat, int? equippedStat)
         {
             return equippedStat.HasValue ? baseStat + equippedStat.Value : baseStat;
