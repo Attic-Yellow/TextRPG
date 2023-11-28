@@ -25,7 +25,7 @@ namespace TextRPG.Entity
 
         // 원딜
         Bard,    // 원거리 물리 딜러
-        
+
         // 캐스터
         BlackMage // 원거리 마법 딜러
     }
@@ -46,75 +46,6 @@ namespace TextRPG.Entity
             Name = name;
             Experience = experience;
             JobClass = jobClass;
-            EquipDefaultWeapon(); 
-        }
-
-        private void EquipDefaultWeapon()
-        {
-            switch (JobClass)
-            {
-                case CharacterClass.Warrior:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Sword);
-                    break;
-                case CharacterClass.Knight:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Sword);
-                    break;
-                case CharacterClass.WhiteMage:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.WhiteMageStaff);
-                    break;
-                case CharacterClass.Monk:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Knuckle);
-                    break;
-                case CharacterClass.Dragoon:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Spear);
-                    break;  
-                case CharacterClass.Bard:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.Bow);
-                    break;
-                case CharacterClass.BlackMage:
-                    EquippedWeapon = WeaponFactory.CreateDefaultWeapon(WeaponType.BlackMageStaff);
-                    break;
-            }
-        }
-
-        public void EquipWeapon(Weapon weapon)
-        {
-            EquippedWeapon = weapon;
-            CharacterStatsManager.ApplyWeaponStats(this, weapon, apply: true);
-        }
-
-        public void UnequipWeapon()
-        {
-            if (EquippedWeapon != null)
-            {
-                CharacterStatsManager.ApplyWeaponStats(this, EquippedWeapon, apply: false);
-                EquippedWeapon = null;
-            }
-        }
-
-        public EquipmentStats GetTotalEquipmentStats()
-        {
-            EquipmentStats totalStats = new EquipmentStats();
-
-            if (EquippedWeapon != null)
-            {
-                totalStats.Health += EquippedWeapon.Health;
-                totalStats.Mana += EquippedWeapon.Mana;
-                totalStats.PhysicalAttack += EquippedWeapon.PhysicalAttack;
-                totalStats.MagicalAttack += EquippedWeapon.MagicalAttack;
-                totalStats.PhysicalDefense += EquippedWeapon.PhysicalDefense;
-                totalStats.MagicalDefense += EquippedWeapon.MagicalDefense;
-                totalStats.Speed += EquippedWeapon.Speed;
-                totalStats.HealingPower += EquippedWeapon.HealingPower;
-                totalStats.SelfHealingPower += EquippedWeapon.SelfHealingPower;
-                totalStats.Luck += EquippedWeapon.Luck;
-                totalStats.Critical += EquippedWeapon.Critical;
-            }
-
-            // 다른 장비들에 대한 스테이터스 합산 로직...
-            // 예: 갑옷, 방패 등
-
-            return totalStats;
         }
 
         public string GetJobClassNameInKorean()
@@ -139,20 +70,5 @@ namespace TextRPG.Entity
                     return "알 수 없음";
             }
         }
-    }
-    public class EquipmentStats
-    {
-        public int Health { get; set; }
-        public int Mana { get; set; }
-        public int PhysicalAttack { get; set; }
-        public int MagicalAttack { get; set; }
-        public int PhysicalDefense { get; set; }
-        public int MagicalDefense { get; set; }
-        public int Speed { get; set; }
-        public int HealingPower { get; set; }
-        public int SelfHealingPower { get; set; }
-        public int Luck { get; set; }
-        public int Critical { get; set; }
-
     }
 }

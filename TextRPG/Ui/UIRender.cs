@@ -12,7 +12,7 @@ namespace TextRPG.Ui
         {
             for (int i = 0; i < itemCount + 2; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth - width) / 2 + 3, (Console.WindowHeight - itemCount) / 2 + i);
+                Console.SetCursorPosition((Console.WindowWidth) / 2 + 3, (Console.WindowHeight) / 2 + i);
                 if (i == 0)
                 {
                     Console.Write($"┌{new string('─', width - 2)}┐");
@@ -39,7 +39,7 @@ namespace TextRPG.Ui
 
             for (int i = 0; i < itemCount + 1; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth - width) / 2 + 3, (Console.WindowHeight) - 28 + i);
+                Console.SetCursorPosition((Console.WindowWidth) / 2 + 3, (Console.WindowHeight) - 28 + i);
                 if (i == 0)
                 {
                     Console.Write($"{topLeft}{new string(horizontal, width - 2)}{topRight}");
@@ -64,7 +64,7 @@ namespace TextRPG.Ui
 
             for (int i = 0; i < itemCount; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth - width) / 2 + 3, (Console.WindowHeight) - 25 + i);
+                Console.SetCursorPosition((Console.WindowWidth) / 2 + 3, (Console.WindowHeight) - 25 + i);
                 if (i == 0)
                 {
                     Console.Write($"{middleLeft}{new string(horizontal, width / 2 - 3)}{middleLeft}{new string(horizontal, width / 2)}{middleLeft}  ");
@@ -80,7 +80,7 @@ namespace TextRPG.Ui
             }
             for (int i = 0; i < itemCount + 15; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth - width) / 2 + 3, (Console.WindowHeight) - 23 + i);
+                Console.SetCursorPosition((Console.WindowWidth) / 2 + 3, (Console.WindowHeight) - 23 + i);
                 if (i == 0)
                 {
                     Console.Write($"{middleLeft}{new string(horizontal, width / 2 - 3)}{middleLeft}{new string(horizontal, width / 2)}{middleLeft}  ");
@@ -109,7 +109,7 @@ namespace TextRPG.Ui
 
             for (int i = 0; i < itemCount; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth - width) / 2 + 3, (Console.WindowHeight) - 25 + i);
+                Console.SetCursorPosition((Console.WindowWidth) / 2 + 3, (Console.WindowHeight) - 25 + i);
                 if (i == 0)
                 {
                     Console.Write($"{middleLeft}{new string(horizontal, width / 2 - 3)}{middleLeft}{new string(horizontal, width / 2)}{middleLeft}  ");
@@ -125,7 +125,7 @@ namespace TextRPG.Ui
             }
             for (int i = 0; i < itemCount + 15; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth - width) / 2 + 3, (Console.WindowHeight) - 23 + i);
+                Console.SetCursorPosition((Console.WindowWidth) / 2 + 3, (Console.WindowHeight) - 23 + i);
                 if (i == 0)
                 {
                     Console.Write($"{middleLeft}{new string(horizontal, width / 2 - 3)}{middleLeft}{new string(horizontal, width / 2)}{middleLeft}  ");
@@ -145,10 +145,10 @@ namespace TextRPG.Ui
             }
         }
 
-        public static void DrawCenteredStringInBox(string str, int boxWidth, int yOffset = 0)
+        public static void DrawCenteredStringInBox(string str, int yOffset = 0)
         {
-            int leftOffset = (boxWidth - str.Length) / 2;
-            Console.SetCursorPosition((Console.WindowWidth - boxWidth) / 2 + leftOffset, Console.CursorTop + yOffset);
+            int leftOffset = (str.Length) / 2;
+            Console.SetCursorPosition((Console.WindowWidth) / 2 + leftOffset, Console.CursorTop + yOffset);
             Console.Write(str);
         }
 

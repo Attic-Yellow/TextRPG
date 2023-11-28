@@ -12,10 +12,12 @@ namespace TextRPG.DataManager
 {
     public class PlayerData
     {
+        private CharacterStatsManager characterStatsManager = new CharacterStatsManager();
+
         public List<Character> characters { get; set; }
         public Character PlayerCharacter { get;  set; }
-        private CharacterStatsManager characterStatsManager = new CharacterStatsManager();
         public Inventory Inventory { get; private set; }
+
         public PlayerData()
         {
             characters = new List<Character>();
@@ -54,30 +56,6 @@ namespace TextRPG.DataManager
         public bool RemoveItemFromInventory(EquipmentItem item)
         {
             return Inventory.RemoveItem(item);
-        }
-
-        public void EquipItemToCharacter(EquipmentItem item)
-        {
-            if (PlayerCharacter != null)
-            {
-                if (item is Weapon)
-                {
-                    PlayerCharacter.EquipWeapon(item as Weapon);
-                }
-                // 갑옷이나 기타 장비에 대한 처리...
-            }
-        }
-
-        public void UnequipItemFromCharacter(EquipmentItem item)
-        {
-            if (PlayerCharacter != null)
-            {
-                if (item is Weapon)
-                {
-                    PlayerCharacter.UnequipWeapon();
-                }
-                // 갑옷이나 기타 장비에 대한 처리...
-            }
         }
 
         public void LevelUp()
