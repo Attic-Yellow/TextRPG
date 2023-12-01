@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextRPG.DataManager;
 
 namespace TextRPG.Ui.Scenes
 {
@@ -93,7 +94,7 @@ namespace TextRPG.Ui.Scenes
                     break;
                 case 1:
                     // "이어하기" 선택 시 로직
-                    // ContinueGame();
+                    LoadExistingGame();
                     break;
                 case 2:
                     // "게임 종료" 선택 시 로직
@@ -102,12 +103,37 @@ namespace TextRPG.Ui.Scenes
             }
         }
 
+
         private void StartGame()
         {
             // 게임 시작 로직 (예: 다른 장면으로 전환)
-            Console.WriteLine("게임을 시작합니다...");
+            Console.WriteLine("캐릭터 선택을 시작합니다...");
             Thread.Sleep(1000);
             sceneManager.ChangeScene(new CharacterSelectionScene(sceneManager));
+        }
+
+        private void LoadExistingGame()
+        {
+            GameData loadedData = GameData.LoadGameData();
+            if (loadedData != null && loadedData.characters != null && loadedData.characters.Any())
+            {
+                var playerData = SingletonManager.GetInstance();
+                playerData.characters.Clear();
+                foreach (var character in loadedData.characters)
+                {
+                    playerData.AddCharacter(character);
+                }
+                Console.WriteLine("저장된 게임을 성공적으로 불러왔습니다...");
+                Console.WriteLine("메인 메뉴로 이동합니다...");
+                Thread.Sleep(1000);
+                sceneManager.ChangeScene(new MainMenuScene(sceneManager)); // 적절한 게임 장면으로 전환
+            }
+            else
+            {
+                Console.WriteLine("저장된 게임이 없습니다.");
+                Thread.Sleep(1000);
+                // 사용자가 새 게임을 시작하도록 유도하거나, 게임 시작 메뉴로 돌아갑니다.
+            }
         }
 
         private void ExitGame()

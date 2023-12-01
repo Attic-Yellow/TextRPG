@@ -7,19 +7,22 @@ using TextRPG.DataManager;
 
 namespace TextRPG.Ui.Scenes
 {
-    class MainMenuScene : Scene
+    public class CharacterMenuScene : Scene
     {
         private SceneManager sceneManager;
+        private PlayerData playerData;
         private int currentSelection = 0;
-        private const int MaxMenuItems = 4;
+        private const int MaxMenuItems = 4; // 최대 메뉴 항목 수
 
-        public MainMenuScene(SceneManager sceneManager)
+        public CharacterMenuScene(SceneManager sceneManager)
         {
             this.sceneManager = sceneManager;
+            this.playerData = SingletonManager.GetInstance();
         }
 
         public override void Init()
         {
+            Console.Clear();
             Render();
         }
 
@@ -29,7 +32,6 @@ namespace TextRPG.Ui.Scenes
             {
                 var key = Console.ReadKey(intercept: true).Key;
                 bool shouldRender = false;
-
                 switch (key)
                 {
                     case ConsoleKey.UpArrow:
@@ -42,10 +44,8 @@ namespace TextRPG.Ui.Scenes
                         break;
                     case ConsoleKey.Enter:
                         PerformActionBasedOnSelection();
-                        // shouldRender는 여기서 false로 유지됨
                         break;
                 }
-
                 if (shouldRender)
                 {
                     Render();
@@ -53,20 +53,22 @@ namespace TextRPG.Ui.Scenes
             }
         }
 
-
         public override void Render()
         {
             Console.Clear();
-            PrintMenuItem("1. 전투 탐색", 0);
-            PrintMenuItem("2. 캐릭터 메뉴", 1);
-            PrintMenuItem("3. 저장 하기", 2);
-            PrintMenuItem("4. 게임 종료", 3);
+            PrintMenuItem("1. 장비 관리", 0);
+            PrintMenuItem("2. 스킬 관리", 1);
+            PrintMenuItem("3. 인벤토리", 2);
+            PrintMenuItem("4. 뒤로 가기", 3);
         }
 
-        private void PrintMenuItem(string text, int index)
+        private void PrintMenuItem(string text, int itemIndex)
         {
-            Console.SetCursorPosition((Console.WindowWidth - text.Length) / 2, Console.WindowHeight / 2 - 2 + index);
-            if (index == currentSelection)
+            int xPosition = (Console.WindowWidth - text.Length) / 2;
+            int yPosition = (Console.WindowHeight / 2 - MaxMenuItems / 2) + itemIndex;
+
+            Console.SetCursorPosition(xPosition, yPosition);
+            if (currentSelection == itemIndex)
             {
                 Console.ForegroundColor = ConsoleColor.Yellow;
                 Console.WriteLine($"{text} ◀");
@@ -83,52 +85,33 @@ namespace TextRPG.Ui.Scenes
             switch (currentSelection)
             {
                 case 0:
-                    // 전투 탐색 로직
+                    // 장비 관리 로직
+                    GoEquipmentManagementScene();
                     break;
                 case 1:
-                    // 캐릭터 메뉴 로직
-                    GoCharacterMenuScene();
+                    // 스킬 관리 로직
                     break;
                 case 2:
-                    // 저장 로직
-                    SaveGame();
+                    // 인벤토리 로직
                     break;
                 case 3:
-                    // 게임 종료 로직
-                    Environment.Exit(0);
+                    GoBack();
                     break;
             }
         }
 
-        private void GoCharacterMenuScene()
+        private void GoEquipmentManagementScene()
         {
-            Console.WriteLine("캐릭터 메뉴로 이동합니다...");
-            Thread.Sleep(1000);
-            sceneManager.ChangeScene(new CharacterMenuScene(sceneManager));
+            Console.WriteLine("장비 관리로 이동합니다...");
+            Thread.Sleep(500);
+            sceneManager.ChangeScene(new EquipmentManagementScene(sceneManager));
         }
 
-        private static void SaveGame()
+        private void GoBack()
         {
-            var playerData = SingletonManager.GetInstance();
-
-            if (playerData == null || playerData.GetAllCharacters().Count == 0)
-            {
-                Console.Clear();
-                Console.WriteLine("저장할 데이터가 없습니다.");
-                Thread.Sleep(1000);
-                return;
-            }
-
-            GameData gameData = new GameData
-            {
-                // PlayerData에서 characters 리스트를 가져와 저장합니다.
-                characters = playerData.GetAllCharacters()
-            };
-
-            gameData.SaveGame("TextRPG_SaveData.json");
-            Console.Clear();
-            Console.WriteLine("게임이 저장되었습니다...");
-            Thread.Sleep(1000);
+            Console.WriteLine("메인 메뉴로 돌아갑니다...");
+            Thread.Sleep(500);
+            sceneManager.ChangeScene(new MainMenuScene(sceneManager));
         }
     }
 }

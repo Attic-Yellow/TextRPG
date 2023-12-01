@@ -145,9 +145,9 @@ namespace TextRPG.Entity
             Mana = mana;
             PhysicalAttack = physicalAttack;
             MagicalAttack = magicalAttack;
-            Speed = speed;
             PhysicalDefense = physicalDefense;
             MagicalDefense = magicalDefense;
+            Speed = speed;
             HealingPower = healingPower;
             SelfHealingPower = selfHealingPower;
         }
