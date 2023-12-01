@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TextRPG.DataManager;
 
 namespace TextRPG.Ui.Scenes
 {
@@ -79,12 +80,37 @@ namespace TextRPG.Ui.Scenes
                     break;
                 case 2:
                     // 저장 로직
+                    SaveGame();
                     break;
                 case 3:
                     // 게임 종료 로직
                     Environment.Exit(0);
                     break;
             }
+        }
+
+        private static void SaveGame()
+        {
+            var playerData = SingletonManager.GetInstance();
+
+            if (playerData == null || playerData.GetAllCharacters().Count == 0)
+            {
+                Console.Clear();
+                Console.WriteLine("저장할 데이터가 없습니다.");
+                Thread.Sleep(1000);
+                return;
+            }
+
+            GameData gameData = new GameData
+            {
+                // PlayerData에서 characters 리스트를 가져와 저장합니다.
+                characters = playerData.GetAllCharacters()
+            };
+
+            gameData.SaveGame("TextRPG_SaveData.json");
+            Console.Clear();
+            Console.WriteLine("게임이 저장되었습니다.");
+            Thread.Sleep(1000);
         }
     }
 }
