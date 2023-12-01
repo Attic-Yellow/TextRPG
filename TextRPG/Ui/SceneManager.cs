@@ -10,6 +10,7 @@ namespace TextRPG.Ui
     public class SceneManager
     {
         private Scene currentScene;
+
         public void ChangeScene(Scene newScene)
         {
             currentScene = newScene;
@@ -33,16 +34,4 @@ namespace TextRPG.Ui
         public abstract void Update();
         public abstract void Render();
     }
-
-  /*  public class GameStartScene : Scene
-    {
-        // GameStart UI 로직 구현
-        // ...
-    }
-
-    public class CharacterMenuScene : Scene
-    {
-        // CharacterMenu UI 로직 구현
-        // ...
-    }*/
 }

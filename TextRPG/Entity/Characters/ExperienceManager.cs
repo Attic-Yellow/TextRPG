@@ -17,12 +17,11 @@ namespace TextRPG.Entity.Characters
 
         private static void CheckLevelUp(Character character)
         {
-            // 경험치에 따른 레벨업 로직
-            // 예: 100 경험치마다 레벨업
-            while (character.Experience >= 100 * character.Level)
+            // 경험치에 따른 레벨업 로직 수정
+            while (character.Experience >= 100 * character.Level * character.Level)
             {
-                character.Experience -= 100 * character.Level;
-                CharacterStatsManager.LevelUp(character); 
+                character.Experience -= 100 * character.Level * character.Level;
+                CharacterStatsManager.LevelUp(character);
             }
         }
     }

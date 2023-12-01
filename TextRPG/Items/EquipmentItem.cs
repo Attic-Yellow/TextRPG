@@ -32,8 +32,8 @@ namespace TextRPG.Items
         public int Critical { get; set; } // 치명타 확률
         public int Durability { get; set; } // 내구도
 
-        public EquipmentItem(ItemGrade grade, string name, string description, EquipmentType equipmentType, int health, int mana, int physicalAttack, int magicalAttack, int physicalDefense, int magicalDefense, int speed, int healingPower, int selfHealingPower, int luck, int critical, int durability)
-            : base(grade, name, description)
+        public EquipmentItem(ItemGrade grade, string name, string description, int price, EquipmentType equipmentType, int health, int mana, int physicalAttack, int magicalAttack, int physicalDefense, int magicalDefense, int speed, int healingPower, int selfHealingPower, int luck, int critical, int durability)
+            : base(grade, name, description, price)
         {
             EquipmentType = equipmentType;
             Health = health;
@@ -48,6 +48,22 @@ namespace TextRPG.Items
             Luck = luck;
             Critical = critical;
             Durability = durability;
+        }
+
+        public bool IsBroken => Durability <= 0;
+
+        public void Use()
+        {
+            if (Durability > 0)
+            {
+                Durability--;
+            }
+        }
+
+        public void Repair(int amount)
+        {
+            Durability += amount;
+            // 내구도가 최대치를 초과하지 않도록 조정
         }
     }
 }

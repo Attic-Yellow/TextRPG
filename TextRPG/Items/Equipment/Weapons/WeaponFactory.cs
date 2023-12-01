@@ -8,7 +8,7 @@ namespace TextRPG.Items.Equipment.Weapons
 {
     class WeaponFactory
     {
-        public static Weapon CreateDefaultWeapon(WeaponType weaponType)
+        public static Weapon CreateCommonWeapon(WeaponType weaponType)
         {
             switch (weaponType)
             {
@@ -17,6 +17,7 @@ namespace TextRPG.Items.Equipment.Weapons
                         ItemGrade.Common,
                         "초보자용 도끼",
                         "낡아보이지만 생각외로 튼튼한 초보자용 도끼이다.",
+                        price: 35,
                         WeaponType.Axe,
                         health: 4,
                         mana: 0,
@@ -36,6 +37,7 @@ namespace TextRPG.Items.Equipment.Weapons
                         ItemGrade.Common,
                         "초보자용 미들소드",
                         "무게가 가벼워 검이 익숙하지 않은 사람이어 사용할 수 있다.",
+                        price: 35,
                         WeaponType.Sword,
                         health: 2,
                         mana: 1,
@@ -55,6 +57,7 @@ namespace TextRPG.Items.Equipment.Weapons
                         ItemGrade.Common,
                         "초보자용 하얀 지팡이",
                         "오래된 지팡이 초보자가 사용하기엔 안성맞춤이다.",
+                        price: 35,
                         WeaponType.WhiteMageStaff,
                         health: 0,
                         mana: 5,
@@ -74,6 +77,7 @@ namespace TextRPG.Items.Equipment.Weapons
                         ItemGrade.Common,
                         "초보자용 너클",
                         "근접전을 위한 한쌍의 너클, 가죽으로 만들어졌다.",
+                        price: 35,
                         WeaponType.Knuckle,
                         health: 2,
                         mana: 1,
@@ -93,6 +97,7 @@ namespace TextRPG.Items.Equipment.Weapons
                         ItemGrade.Common,
                         "초보자용 창",
                         "공격과 방어의 밸런스가 좋은 장창이다. 생각보다 무겁다.",
+                        price: 35,
                         WeaponType.Spear,
                         health: 2,
                         mana: 1,
@@ -112,6 +117,7 @@ namespace TextRPG.Items.Equipment.Weapons
                         ItemGrade.Common,
                         "초보자용 활",
                         "가벼우며 뻑뻑하지 않아 누구나 쉽게 다룰 수 있는 연습용 활이다.",
+                        price: 35,
                         WeaponType.Bow,
                         health: 4,
                         mana: 2,
@@ -130,7 +136,8 @@ namespace TextRPG.Items.Equipment.Weapons
                     return new Weapon(
                         ItemGrade.Common,
                         "초보자용 검은 지팡이",
-                        "공격마법에 특화되어 있는 어둠의 지팡이이다. 금방이라도 부셔질 것 같다.",
+                        "공격마법에 특화되어 있는 어둠의 지팡이이다. 금방이라도 부서질 것 같다.",
+                        price: 35,
                         WeaponType.BlackMageStaff,
                         health: 0,
                         mana: 5,

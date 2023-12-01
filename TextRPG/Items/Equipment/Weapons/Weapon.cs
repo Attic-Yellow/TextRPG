@@ -38,8 +38,8 @@ namespace TextRPG.Items.Equipment.Weapons
         public WeaponType WeaponType { get; set; }
 
 
-        public Weapon(ItemGrade grade, string name, string description, WeaponType weaponType, int health, int mana, int physicalAttack, int magicalAttack, int physicalDefense, int magicalDefense, int speed, int healingPower, int selfHealingPower, int luck, int critical, int durability)
-            : base(grade, name, description, EquipmentType.Weapon, health, mana, physicalAttack, magicalAttack, physicalDefense, magicalDefense, speed, healingPower, selfHealingPower, luck, critical, durability)
+        public Weapon(ItemGrade grade, string name, string description, int price, WeaponType weaponType, int health, int mana, int physicalAttack, int magicalAttack, int physicalDefense, int magicalDefense, int speed, int healingPower, int selfHealingPower, int luck, int critical, int durability)
+            : base(grade, name, description, price, EquipmentType.Weapon, health, mana, physicalAttack, magicalAttack, physicalDefense, magicalDefense, speed, healingPower, selfHealingPower, luck, critical, durability)
         {
             WeaponType = weaponType;
         }

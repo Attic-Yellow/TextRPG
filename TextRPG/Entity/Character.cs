@@ -35,9 +35,9 @@ namespace TextRPG.Entity
         public string Name { get; set; }
         public int Experience { get; set; }
         public CharacterClass JobClass { get; set; }
-        public Weapon EquippedWeapon { get; private set; }
-        public int Luck { get; internal set; }
-        public int Critical { get; internal set; }
+        public Weapon EquippedWeapon { get; set; }
+        public int Luck { get; set; }
+        public int Critical { get; set; }
 
         [JsonConstructor]
         public Character(string name, CharacterClass jobClass, int level, int health, int mana, int physicalAttack, int magicalAttack, int physicalDefense, int magicalDefense, int speed, int healingPower, int selfHealingPower, int experience)

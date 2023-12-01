@@ -5,84 +5,43 @@ using System.Text;
 using System.Threading.Tasks;
 using TextRPG.DataManager;
 using TextRPG.Ui;
+using TextRPG.Ui.Scenes;
 
 namespace TextRPG.GameEngine
 {
     public class Engine
     {
         public bool IsRunning { get; private set; }
-        enum MoveDir { Up, Down, Left, Right, None }
 
-        private MoveDir input;
+        private SceneManager sceneManager;
+
 
         public Engine()
         {
+            IsRunning = true;
         }
 
         public void Start()
         {
-            Init();
-            GameLoop();
-        }
+            sceneManager = new SceneManager();
+            Scene gameStartScene = new GameStartScene(sceneManager);
+            sceneManager.ChangeScene(gameStartScene);
 
-        private void Init()
-        {
-            // 초기화 로직
+            GameLoop();
         }
 
         private void GameLoop()
         {
             while (IsRunning)
             {
-                Input();
-                Update();
-                Render();
+                sceneManager.Update(); // 키 입력과 업데이트를 여기서 처리
+                                       // Render() 메서드는 Update() 내에서 호출
             }
-        }
-
-        private void Input()
-        {
-            ConsoleKeyInfo keyInfo = Console.ReadKey();
-            ConsoleKey key = keyInfo.Key;
-
-            switch (key)
-            {
-                case ConsoleKey.UpArrow:
-                    input = MoveDir.Up;
-                    break;
-                case ConsoleKey.DownArrow:
-                    input = MoveDir.Down;
-                    break;
-                case ConsoleKey.LeftArrow:
-                    input = MoveDir.Left;
-                    break;
-                case ConsoleKey.RightArrow:
-                    input = MoveDir.Right;
-                    break;
-                case ConsoleKey.Escape:
-                    Exit();
-                    break;
-                default:
-                    input = MoveDir.None;
-                    break;
-            }
-        }
-
-        private void Update()
-        {
-            // 업데이트 로직
-            LoadGame();
-        }
-
-        private void Render()
-        {
-            // 렌더링 로직
-            Console.Clear();
-
         }
 
         public void Exit()
         {
+            // 필요한 정리 작업
             IsRunning = false;
         }
 

@@ -16,12 +16,12 @@ namespace TextRPG.DataManager
 
         public List<Character> characters { get; set; }
         public Character PlayerCharacter { get;  set; }
-        public Inventory Inventory { get; private set; }
+        public InventoryManager Inventory { get; private set; }
 
         public PlayerData()
         {
             characters = new List<Character>();
-            Inventory = new Inventory();
+            Inventory = new InventoryManager();
         }
 
         public Character GetLatestCharacter()
@@ -53,9 +53,9 @@ namespace TextRPG.DataManager
             Inventory.AddItem(item);
         }
 
-        public bool RemoveItemFromInventory(EquipmentItem item)
+        public void RemoveItemFromInventory(EquipmentItem item)
         {
-            return Inventory.RemoveItem(item);
+            Inventory.RemoveItem(item);
         }
 
         public void LevelUp()

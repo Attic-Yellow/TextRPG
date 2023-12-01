@@ -12,7 +12,47 @@ namespace TextRPG.Ui
         {
             for (int i = 0; i < itemCount + 2; i++)
             {
-                Console.SetCursorPosition((Console.WindowWidth) / 2 + 3, (Console.WindowHeight) / 2 + i);
+                Console.SetCursorPosition((Console.WindowWidth / 3) - 3 , (Console.WindowHeight / 3) + 3 + i);
+                if (i == 0)
+                {
+                    Console.Write($"┌{new string('─', width - 2)}┐");
+                }
+                else if (i == itemCount + 1)
+                {
+                    Console.Write($"└{new string('─', width - 2)}┘");
+                }
+                else
+                {
+                    Console.Write($"│{new string(' ', width - 2)}│");
+                }
+            }
+        }
+
+        public static void DrawBox2(int width, int itemCount)
+        {
+            for (int i = 0; i < itemCount + 2; i++)
+            {
+                Console.SetCursorPosition((Console.WindowWidth / 3), (Console.WindowHeight / 3) + 1 + i);
+                if (i == 0)
+                {
+                    Console.Write($"┌{new string('─', width - 2)}┐");
+                }
+                else if (i == itemCount + 1)
+                {
+                    Console.Write($"└{new string('─', width - 2)}┘");
+                }
+                else
+                {
+                    Console.Write($"│{new string(' ', width - 2)}│");
+                }
+            }
+        }
+
+        public static void DrawBox3(int width, int itemCount)
+        {
+            for (int i = 0; i < itemCount + 2; i++)
+            {
+                Console.SetCursorPosition((Console.WindowWidth / 3) + 25, (Console.WindowHeight / 3) + 1 + i);
                 if (i == 0)
                 {
                     Console.Write($"┌{new string('─', width - 2)}┐");

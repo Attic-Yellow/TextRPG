@@ -10,13 +10,11 @@ namespace TextRPG.Items
     class ConsumableItem : BaseItem
     {
         public int Quantity { get; set; }
-        public int Price { get; }
 
         public ConsumableItem(ItemGrade grade, string name, string description, int quantity, int price)
-            : base(grade, name, description)
+            : base(grade, name, description, price)
         {
             Quantity = quantity;
-            Price = price;
         }
     }
 }

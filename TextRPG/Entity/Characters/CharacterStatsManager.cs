@@ -16,7 +16,7 @@ namespace TextRPG.Entity.Characters
             {
                 case CharacterClass.Warrior:
                     // 전사: 높은 체력, 물리 공격력, 물리 방어력
-                    character.Level += 1;
+                    character.Level = 1;
                     character.Health += 20;
                     character.Mana += 5;
                     character.PhysicalAttack += 10;
@@ -125,7 +125,6 @@ namespace TextRPG.Entity.Characters
                     character.Speed += 2;
                     character.HealingPower += 1;
                     character.SelfHealingPower += 1;
-                    character.Experience = 0;
                     break;
                 case CharacterClass.Knight:
                     // 나이트: 마나, 마법 방어력, 물리 방어력 우선 증가
@@ -138,7 +137,6 @@ namespace TextRPG.Entity.Characters
                     character.Speed += 2;
                     character.HealingPower += 2;
                     character.SelfHealingPower += 1;
-                    character.Experience = 0;
                     break;
                 case CharacterClass.WhiteMage:
                     // 백마도사(WhiteMage): 타인 회복력과 마법 방어력, 마나 우선 증가
@@ -151,7 +149,6 @@ namespace TextRPG.Entity.Characters
                     character.Speed += 2;
                     character.HealingPower += 8;
                     character.SelfHealingPower += 4;
-                    character.Experience = 0;
                     break;
                 case CharacterClass.Monk:
                     // 수도승(Monk)
@@ -164,7 +161,6 @@ namespace TextRPG.Entity.Characters
                     character.Speed += 4;
                     character.HealingPower += 1;
                     character.SelfHealingPower += 1;
-                    character.Experience = 0;
                     break;
 
                 case CharacterClass.Dragoon:
@@ -178,7 +174,6 @@ namespace TextRPG.Entity.Characters
                     character.Speed += 3;
                     character.HealingPower += 1;
                     character.SelfHealingPower += 1;
-                    character.Experience = 0;
                     break;
 
                 case CharacterClass.Bard:
@@ -192,7 +187,6 @@ namespace TextRPG.Entity.Characters
                     character.Speed += 6;
                     character.HealingPower += 3;
                     character.SelfHealingPower += 2;
-                    character.Experience = 0;
                     break;
 
                 case CharacterClass.BlackMage:
@@ -206,26 +200,8 @@ namespace TextRPG.Entity.Characters
                     character.Speed += 2;
                     character.HealingPower += 2;
                     character.SelfHealingPower += 1;
-                    character.Experience = 0;
                     break;
             }
-        }
-        public static void ApplyWeaponStats(Character character, Weapon weapon, bool apply)
-        {
-            // 무기의 능력치를 캐릭터 능력치에 적용하거나 제거
-            int modifier = apply ? 1 : -1;
-
-            character.Health += weapon.Health * modifier;
-            character.Mana += weapon.Mana * modifier;
-            character.PhysicalAttack += weapon.PhysicalAttack * modifier;
-            character.MagicalAttack += weapon.MagicalAttack * modifier;
-            character.PhysicalDefense += weapon.PhysicalDefense * modifier;
-            character.MagicalDefense += weapon.MagicalDefense * modifier;
-            character.Speed += weapon.Speed * modifier;
-            character.HealingPower += weapon.HealingPower * modifier;
-            character.SelfHealingPower += weapon.SelfHealingPower * modifier;
-            character.Luck += weapon.Luck * modifier;
-            character.Critical += weapon.Critical * modifier;
         }
     }
 }

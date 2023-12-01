@@ -19,27 +19,14 @@ namespace TextRPG.Items
         public ItemGrade Grade { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
+        public int Price { get; set; }  // 가격 속성 추가
 
-        public BaseItem(ItemGrade grade, string name, string description)
+        public BaseItem(ItemGrade grade, string name, string description, int price)
         {
             Grade = grade;
             Name = name;
             Description = description;
-        }
-
-        public virtual void Use()
-        {
-            Console.WriteLine("You used " + Name);
-        }
-
-        public virtual void Drop()
-        {
-            Console.WriteLine("You dropped " + Name);
-        }
-
-        public virtual void PickUp()
-        {
-            Console.WriteLine("You picked up " + Name);
+            Price = price;
         }
     }
 }
